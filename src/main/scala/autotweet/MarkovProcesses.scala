@@ -6,6 +6,8 @@ import scala.collection.Map
 import scala.util.matching.Regex
 import scala.util.Random
 
+// TODO: move to n-gram model
+// TODO: instead of special casing first gram/Scorable etc and add a beginning-of-line character 
 object MarkovProcesses {
 
   trait Scorable {
@@ -53,6 +55,7 @@ object MarkovProcesses {
   
   def generate(proc:Process) = {
     val w0 = pick(proc.initials)
+    // TODO: remove try/catch and tidy
     (0 to proc.aveCount).foldLeft((w0,w0)) { case ((acc,x),_) => {
       try {
         val newWord = pick(proc.words(x).next)
@@ -75,7 +78,7 @@ object MarkovProcesses {
   }
   
   def normalise(values:Iterable[_ <: Scorable]) {
-    val total = values.map(_.getScore()).toArray.sum
+    val total = values.map(_.getScore()).toSeq.sum
     values.foreach(score => score.setScore(score.getScore() / total))
   }
   
